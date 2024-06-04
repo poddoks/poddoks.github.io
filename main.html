@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scale API Request</title>
+</head>
+<body>
+    <h1>Scale API Request</h1>
+    <form id="inputForm">
+        <label for="input">Input:</label><br>
+        <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        document.getElementById("inputForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            let input = document.getElementById("input").value.trim();
+            if (input === "") {
+                alert("Please enter some input.");
+                return;
+            }
+
+            let responseDiv = document.getElementById("response");
+            responseDiv.innerHTML = "Processing...";
+
+            try {
+                let response = await fetch("https://dashboard.scale.com/spellbook/api/v2/deploy/2i03fom", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic clx0xl2jf00h71aut3tijh2hs"
+                    },
+                    body: JSON.stringify({
+                        "input": {
+                            "input": input
+                        }
+                    })
+                });
+
+                let responseData = await response.json();
+                responseDiv.innerHTML = JSON.stringify(responseData, null, 2);
+            } catch (error) {
+                responseDiv.innerHTML = "An error occurred: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
